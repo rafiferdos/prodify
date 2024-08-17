@@ -124,7 +124,7 @@ const Login = () => {
                         </form>
 
 
-                        <div className="flex items-center justify-between mt-4">
+                        <div className="flex items-center justify-between mt-5">
                             <span className="w-1/5 border-b md:w-1/4"></span>
 
                             <Link to='/register' className="text-xs uppercase hover:underline">or Register</Link>
