@@ -74,41 +74,44 @@ const Home = () => {
             <h1 className="md:text-5xl text-2xl my-16">All Products</h1>
             <div className="flex items-center justify-center flex-col gap-4">
 
-            <div className="flex items-center justify-center flex-wrap gap-2">
-                <label htmlFor="sorting" className="mr-2">Sort by:</label>
-                <select
-                    id="sorting"
-                    onChange={handleSortChange}
-                    value={sortOption}
-                    className="select select-bordered"
-                >
-                    <option value="priceLowToHigh">Price: Low to High</option>
-                    <option value="priceHighToLow">Price: High to Low</option>
-                    <option value="dateNewestFirst">Date Added: Newest First</option>
-                </select>
+                <div className="flex items-center justify-center flex-wrap gap-2">
+                    <label htmlFor="sorting" className="mr-2">Sort by:</label>
+                    <select
+                        id="sorting"
+                        onChange={handleSortChange}
+                        value={sortOption}
+                        className="select select-bordered"
+                    >
+                        <option value="priceLowToHigh">Price: Low to High</option>
+                        <option value="priceHighToLow">Price: High to Low</option>
+                        <option value="dateNewestFirst">Date Added: Newest First</option>
+                    </select>
+                </div>
+                {/* Category Filter Dropdown */}
+                <div className="flex items-center justify-center flex-wrap mb-8 gap-2">
+                    <label htmlFor="category" className="mr-2">Filter by Category:</label>
+                    <select id="category" value={category} onChange={handleCategoryChange} className="select select-bordered">
+                        <option value="">All Categories</option>
+                        {/* dynamically add categories in options */}
+                        {
+                            (() => {
+                                const uniqueCategories = new Set();
+                                allProducts.forEach(product => {
+                                    uniqueCategories.add(product.category);
+                                });
+                                return Array.from(uniqueCategories).map(category => (
+                                    <option key={category} value={category}>{category}</option>
+                                ));
+                            })()
+                        }
+                        {/* Add more categories as needed */}
+                    </select>
+                </div>
+                <div className="form-control mb-8">
+                    <input type="text" placeholder="Type to search" className="input rounded-3xl input-bordered w-auto" />
+                </div>
             </div>
-            {/* Category Filter Dropdown */}
-            <div className="flex items-center justify-center flex-wrap mb-8 gap-2">
-                <label htmlFor="category" className="mr-2">Filter by Category:</label>
-                <select id="category" value={category} onChange={handleCategoryChange} className="select select-bordered">
-                    <option value="">All Categories</option>
-                    {/* dynamically add categories in options */}
-                    {
-                        (() => {
-                            const uniqueCategories = new Set();
-                            allProducts.forEach(product => {
-                                uniqueCategories.add(product.category);
-                            });
-                            return Array.from(uniqueCategories).map(category => (
-                                <option key={category} value={category}>{category}</option>
-                            ));
-                        })()
-                    }
-                    {/* Add more categories as needed */}
-                </select>
-            </div>
-            </div>
-            <div className="grid lg:gap-10 md:gap-6 gap-4 lg:grid-cols-4 md:grid-cols-3 grid-cols-1 mb-16">
+            <div className="grid lg:gap-10 md:gap-6 gap-4 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-3 grid-cols-1 mb-16">
                 {
                     products.map(product => {
                         return (
