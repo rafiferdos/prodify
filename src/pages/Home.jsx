@@ -14,6 +14,7 @@ const Home = () => {
     }
         , [])
 
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
             <h1 className="md:text-5xl text-2xl my-16">All Products</h1>
@@ -26,8 +27,11 @@ const Home = () => {
                                     <img src={product.productImage} onError={(e) => { e.target.onerror = null; e.target.src = "https://i.ibb.co/t2gtXKw/noImg.png" }} referrerPolicy="no-referrer" alt="product" />
                                 </figure>
                                 <div className="card-body">
-                                    <h2 className="card-title">{product.name}</h2>
+                                    <h2 className="card-title">{product.productName}</h2>
+                                    <div className="badge badge-accent">{product.category}</div>
                                     <p>{product.description}</p>
+                                    <p className="font-bold">Price: <span className="text-primary">${product.price}</span></p>
+                                    <p>Created On: {new Date(product.creationDate).toLocaleDateString('en-GB')} at {new Date(product.creationDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                     <div className="justify-between card-actions">
                                         <button className="btn btn-secondary rounded-full">Buy Now</button>
                                         <button className="btn btn-ghost rounded-full">Add to Cart</button>
