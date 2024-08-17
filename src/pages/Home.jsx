@@ -10,6 +10,7 @@ const Home = () => {
     const [totalPages, setTotalPages] = useState(1); // State for total pages
     const [category, setCategory] = useState(""); // State for selected category
     const [sortOption, setSortOption] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
@@ -68,6 +69,18 @@ const Home = () => {
         setProducts(sortedProducts);
     };
 
+    const handleSearchChange = async (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+
+        if (query.length > 0) {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/search?search=${query}`);
+            const data = await response.json();
+            setProducts(data);
+        } else {
+            setProducts(allProducts);
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
@@ -108,7 +121,7 @@ const Home = () => {
                     </select>
                 </div>
                 <div className="form-control mb-8">
-                    <input type="text" placeholder="Type to search" className="input rounded-3xl input-bordered w-auto" />
+                    <input type="text" placeholder="Type to search" onChange={handleSearchChange} className="input rounded-3xl input-bordered w-auto" />
                 </div>
             </div>
             <div className="grid lg:gap-10 md:gap-6 gap-4 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-3 grid-cols-1 mb-16">
