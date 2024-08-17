@@ -6,11 +6,12 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import AuthProvider from "./provider/AuthProvider";
+import Main from "./layouts/Main";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello world!</div>,
+    element: <Main />,
   },
 ]);
 
