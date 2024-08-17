@@ -9,6 +9,7 @@ const Home = () => {
     const [currentPage, setCurrentPage] = useState(1); // State for the current page
     const [totalPages, setTotalPages] = useState(1); // State for total pages
     const [category, setCategory] = useState(""); // State for selected category
+    const [sortOption, setSortOption] = useState('');
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
@@ -50,11 +51,44 @@ const Home = () => {
             setCurrentPage(page);
         }
     };
+
+    const handleSortChange = (e) => {
+        const option = e.target.value;
+        setSortOption(option);
+
+        let sortedProducts = [...products];
+        if (option === 'priceLowToHigh') {
+            sortedProducts.sort((a, b) => a.price - b.price);
+        } else if (option === 'priceHighToLow') {
+            sortedProducts.sort((a, b) => b.price - a.price);
+        } else if (option === 'dateNewestFirst') {
+            sortedProducts.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+        }
+
+        setProducts(sortedProducts);
+    };
+
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
             <h1 className="md:text-5xl text-2xl my-16">All Products</h1>
+            <div className="flex items-center justify-center flex-col gap-4">
+
+            <div className="flex items-center justify-center flex-wrap gap-2">
+                <label htmlFor="sorting" className="mr-2">Sort by:</label>
+                <select
+                    id="sorting"
+                    onChange={handleSortChange}
+                    value={sortOption}
+                    className="select select-bordered"
+                >
+                    <option value="priceLowToHigh">Price: Low to High</option>
+                    <option value="priceHighToLow">Price: High to Low</option>
+                    <option value="dateNewestFirst">Date Added: Newest First</option>
+                </select>
+            </div>
             {/* Category Filter Dropdown */}
-            <div className="mb-8">
+            <div className="flex items-center justify-center flex-wrap mb-8 gap-2">
                 <label htmlFor="category" className="mr-2">Filter by Category:</label>
                 <select id="category" value={category} onChange={handleCategoryChange} className="select select-bordered">
                     <option value="">All Categories</option>
@@ -72,6 +106,7 @@ const Home = () => {
                     }
                     {/* Add more categories as needed */}
                 </select>
+            </div>
             </div>
             <div className="grid lg:gap-10 md:gap-6 gap-4 lg:grid-cols-4 md:grid-cols-3 grid-cols-1 mb-16">
                 {
