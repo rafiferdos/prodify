@@ -9,6 +9,7 @@ const Home = () => {
     const [currentPage, setCurrentPage] = useState(1); // State for the current page
     const [totalPages, setTotalPages] = useState(1); // State for total pages
     const [category, setCategory] = useState(""); // State for selected category
+    const [priceRange, setPriceRange] = useState([1, 2000]); // Price range state
     const [sortOption, setSortOption] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const { user } = useContext(AuthContext);
@@ -20,30 +21,40 @@ const Home = () => {
     }
         , [])
 
-    // Fetch products based on current page and selected category
-    const fetchProducts = (page, category) => {
+    // Fetch products based on current page, selected category, and price range
+    const fetchProducts = (page, category, priceRange) => {
         let url = `${import.meta.env.VITE_API_URL}/products?page=${page}`;
         if (category) {
             url += `&category=${category}`;
+        }
+        if (priceRange) {
+            url += `&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`;
         }
 
         axios.get(url)
             .then(res => {
                 setProducts(res.data.products);
-                setTotalPages(res.data.totalPages); // Set the total pages from the response
+                setTotalPages(res.data.totalPages);
             })
             .catch(err => console.log(err));
     };
 
-    // Trigger fetch on mount and when page or category changes
+    //dependency array to call fetchProducts when currentPage, category, or priceRange changes
     useEffect(() => {
-        fetchProducts(currentPage, category);
-    }, [currentPage, category]);
+        fetchProducts(currentPage, category, priceRange);
+    }, [currentPage, category, priceRange]);
 
     // Function to handle category change
     const handleCategoryChange = (e) => {
         setCategory(e.target.value); // Update the selected category
         setCurrentPage(1); // Reset to the first page when category changes
+    };
+
+    // Price range handler
+    const handlePriceRangeChange = (e) => {
+        const { name, value } = e.target;
+        setPriceRange((prevRange) => name === "min" ? [value, prevRange[1]] : [prevRange[0], value]);
+        setCurrentPage(1); // Reset to first page on price range change
     };
 
     // Function to handle page change
@@ -123,6 +134,31 @@ const Home = () => {
                 <div className="form-control mb-8">
                     <input type="text" placeholder="Type to search" onChange={handleSearchChange} className="input rounded-3xl input-bordered w-auto" />
                 </div>
+
+                {/* Price Range Filter */}
+            <div className="flex items-center justify-center flex-wrap gap-2 mb-8">
+                <label className="mr-2">Price Range:</label>
+                <input
+                    type="number"
+                    name="min"
+                    value={priceRange[0]}
+                    onChange={handlePriceRangeChange}
+                    min="1"
+                    max="2000"
+                    className="input input-bordered w-24"
+                />
+                <span className="mx-2">to</span>
+                <input
+                    type="number"
+                    name="max"
+                    value={priceRange[1]}
+                    onChange={handlePriceRangeChange}
+                    min="1"
+                    max="2000"
+                    className="input input-bordered w-24"
+                />
+                <span className="ml-2">USD</span>
+            </div>
             </div>
             <div className="grid lg:gap-10 md:gap-6 gap-4 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-3 grid-cols-1 mb-16">
                 {
